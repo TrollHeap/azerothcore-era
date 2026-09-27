@@ -76,6 +76,9 @@ public:
     MOCK_METHOD(LocaleConstant, GetAvailableDbcLocale, (LocaleConstant locale), (const));
     MOCK_METHOD(void, LoadDBVersion, ());
     MOCK_METHOD(char const *, GetDBVersion, (), (const));
+#ifdef MOD_PLAYERBOTS
+    MOCK_METHOD(char const *, GetPlayerbotsDBRevision, (), (const));
+#endif
     MOCK_METHOD(void, UpdateAreaDependentAuras, ());
     MOCK_METHOD(uint32, GetCleaningFlags, (), (const));
     MOCK_METHOD(void, SetCleaningFlags, (uint32 flags), ());
@@ -85,6 +88,7 @@ public:
     MOCK_METHOD(std::string const&, GetRealmName, (), (const));
     MOCK_METHOD(void, SetRealmName, (std::string name), ());
     MOCK_METHOD(void, RemoveOldCorpses, ());
+    MOCK_METHOD(SQLQueryHolderCallback&, AddQueryHolderCallback, (SQLQueryHolderCallback&& callback), ());
     MOCK_METHOD(void, ReloadRBAC, ());
 };
 #pragma GCC diagnostic pop
