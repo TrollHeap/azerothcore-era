@@ -24,8 +24,6 @@
 
 enum BG_WS_Events
 {
-    BG_WS_EVENT_UPDATE_GAME_TIME    = 1,
-    BG_WS_EVENT_NO_TIME_LEFT        = 2,
     BG_WS_EVENT_RESPAWN_BOTH_FLAGS  = 3,
     BG_WS_EVENT_ALLIANCE_DROP_FLAG  = 4,
     BG_WS_EVENT_HORDE_DROP_FLAG     = 5,
@@ -38,7 +36,6 @@ enum BG_WS_TimerOrScore
 {
     BG_WS_MAX_TEAM_SCORE            = 3,
 
-    BG_WS_TOTAL_GAME_TIME           = 27 * MINUTE * IN_MILLISECONDS,
     BG_WS_FLAG_RESPAWN_TIME         = 23 * IN_MILLISECONDS
 };
 constexpr Milliseconds BG_WS_FLAG_DROP_TIME = 10s;
@@ -247,7 +244,6 @@ public:
     void AddPoints(TeamId teamId, uint32 points) { m_TeamScores[teamId] += points; }
 
     TeamId GetPrematureWinner() override;
-    uint32 GetMatchTime() const { return 1 + (BG_WS_TOTAL_GAME_TIME - GetStartTime()) / (MINUTE * IN_MILLISECONDS); }
     uint32 GetAssaultSpellId() const;
     void RemoveAssaultAuras();
 
@@ -257,7 +253,6 @@ private:
     ObjectGuid _flagKeepers[2];
     ObjectGuid _droppedFlagGUID[2];
     uint8  _flagState[2];
-    TeamId _lastFlagCaptureTeam;
     float _wsReputationRate;
     uint32 _reputationCapture;
     uint32 _honorWinKills;
