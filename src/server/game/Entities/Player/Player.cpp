@@ -6275,7 +6275,7 @@ void Player::RewardExtraBonusTalentPoints(uint32 bonusTalentPoints)
 ///Calculate the amount of honor gained based on the victim
 ///and the size of the group for which the honor is divided
 ///An exact honor value can also be given (overriding the calcs)
-bool Player::RewardHonor(Unit* uVictim, uint32 groupsize, int32 honor, bool awardXP)
+bool Player::RewardHonor(Unit* uVictim, uint32 groupsize, int32 honor, bool awardXP, HonorRewardSource source)
 {
     // do not reward honor in arenas, but enable onkill spellproc
     if (InArena())
@@ -6395,6 +6395,8 @@ bool Player::RewardHonor(Unit* uVictim, uint32 groupsize, int32 honor, bool awar
     ModifyHonorPoints(honor);
 
     ApplyModUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, honor, true);
+
+    sScriptMgr->OnPlayerHonorRewarded(this, honor, source);
 
     // Xinef: Battleground experience
     if (awardXP)

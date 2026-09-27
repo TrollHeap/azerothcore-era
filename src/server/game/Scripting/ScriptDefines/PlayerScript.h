@@ -37,6 +37,8 @@ namespace WorldPackets::NPC
     class TrainerList;
 }
 
+enum class HonorRewardSource : uint8;
+
 enum PlayerHook
 {
     PLAYERHOOK_ON_PLAYER_JUST_DIED,
@@ -162,6 +164,7 @@ enum PlayerHook
     PLAYERHOOK_CAN_AREA_EXPLORE_AND_OUTDOOR,
     PLAYERHOOK_ON_VICTIM_REWARD_BEFORE,
     PLAYERHOOK_ON_VICTIM_REWARD_AFTER,
+    PLAYERHOOK_ON_PLAYER_HONOR_REWARDED,
     PLAYERHOOK_ON_CUSTOM_SCALING_STAT_VALUE_BEFORE,
     PLAYERHOOK_ON_CUSTOM_SCALING_STAT_VALUE,
     PLAYERHOOK_ON_APPLY_ITEM_MODS_BEFORE,
@@ -578,6 +581,8 @@ public:
     virtual void OnPlayerVictimRewardBefore(Player* /*player*/, Player* /*victim*/, uint32& /*killer_title*/, int32& /*victim_rank*/) { }
 
     virtual void OnPlayerVictimRewardAfter(Player* /*player*/, Player* /*victim*/, uint32& /*killer_title*/, int32& /*victim_rank*/, float& /*honor_f*/) { }
+
+    virtual void OnPlayerHonorRewarded(Player* /*player*/, uint32 /*honor*/, HonorRewardSource /*source*/) { }
 
     virtual void OnPlayerCustomScalingStatValueBefore(Player* /*player*/, ItemTemplate const* /*proto*/, uint8 /*slot*/, bool /*apply*/, uint32& /*CustomScalingStatValue*/) { }
 

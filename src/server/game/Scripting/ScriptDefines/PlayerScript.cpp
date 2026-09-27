@@ -633,6 +633,11 @@ void ScriptMgr::OnPlayerVictimRewardAfter(Player* player, Player* victim, uint32
     CALL_ENABLED_HOOKS(PlayerScript, PLAYERHOOK_ON_VICTIM_REWARD_AFTER, script->OnPlayerVictimRewardAfter(player, victim, killer_title, victim_rank, honor_f));
 }
 
+void ScriptMgr::OnPlayerHonorRewarded(Player* player, uint32 honor, HonorRewardSource source)
+{
+    CALL_ENABLED_HOOKS(PlayerScript, PLAYERHOOK_ON_PLAYER_HONOR_REWARDED, script->OnPlayerHonorRewarded(player, honor, source));
+}
+
 void ScriptMgr::OnPlayerCustomScalingStatValueBefore(Player* player, ItemTemplate const* proto, uint8 slot, bool apply, uint32& CustomScalingStatValue)
 {
     CALL_ENABLED_HOOKS(PlayerScript, PLAYERHOOK_ON_CUSTOM_SCALING_STAT_VALUE_BEFORE, script->OnPlayerCustomScalingStatValueBefore(player, proto, slot, apply, CustomScalingStatValue));

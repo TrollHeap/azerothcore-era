@@ -50,6 +50,13 @@ struct Mail;
 struct TrainerSpell;
 struct VendorItem;
 
+enum class HonorRewardSource : uint8
+{
+    Other,
+    HonorableKill,
+    Battleground,
+};
+
 class AchievementMgr;
 class ReputationMgr;
 class Channel;
@@ -2183,7 +2190,8 @@ public:
     /***                  PVP SYSTEM                       ***/
     /*********************************************************/
     void UpdateHonorFields();
-    bool RewardHonor(Unit* victim, uint32 groupsize, int32 honor = -1, bool awardXP = true);
+    bool RewardHonor(Unit* victim, uint32 groupsize, int32 honor = -1, bool awardXP = true,
+        HonorRewardSource source = HonorRewardSource::Other);
     [[nodiscard]] uint32 GetHonorPoints() const { return GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY); }
     [[nodiscard]] uint32 GetArenaPoints() const { return GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY); }
     void ModifyHonorPoints(int32 value, CharacterDatabaseTransaction trans = CharacterDatabaseTransaction(nullptr));      //! If trans is specified, honor save query will be added to trans
