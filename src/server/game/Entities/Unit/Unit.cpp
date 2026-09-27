@@ -7358,16 +7358,16 @@ void Unit::ModifyAuraState(AuraStateType flag, bool apply)
         if (!HasFlag(UNIT_FIELD_AURASTATE, 1 << (flag - 1)))
         {
             SetFlag(UNIT_FIELD_AURASTATE, 1 << (flag - 1));
-            Unit::AuraMap& tAuras = GetOwnedAuras();
-            for (Unit::AuraMap::iterator itr = tAuras.begin(); itr != tAuras.end(); ++itr)
-            {
-                if ((*itr).second->IsRemoved())
-                    continue;
-
-                if ((*itr).second->GetSpellInfo()->CasterAuraState == flag )
-                    if (AuraApplication* aurApp = (*itr).second->GetApplicationOfTarget(GetGUID()))
-                        (*itr).second->HandleAllEffects(aurApp, AURA_EFFECT_HANDLE_REAL, true);
-            }
+            // Era: an effect may add or remove owned auras, invalidating flat_multimap iterators;
+            // removed auras are only deleted on the next update, so the copied pointers stay valid.
+            std::vector<Aura*> auras;
+            for (auto const& [id, aura] : GetOwnedAuras())
+                if (!aura->IsRemoved() && aura->GetSpellInfo()->CasterAuraState == flag)
+                    auras.push_back(aura);
+            for (Aura* aura : auras)
+                if (!aura->IsRemoved())
+                    if (AuraApplication* aurApp = aura->GetApplicationOfTarget(GetGUID()))
+                        aura->HandleAllEffects(aurApp, AURA_EFFECT_HANDLE_REAL, true);
         }
     }
     else
@@ -7378,13 +7378,13 @@ void Unit::ModifyAuraState(AuraStateType flag, bool apply)
 
             if (flag != AURA_STATE_ENRAGE)                  // enrage aura state triggering continues auras
             {
-                Unit::AuraMap& tAuras = GetOwnedAuras();
-                for (Unit::AuraMap::iterator itr = tAuras.begin(); itr != tAuras.end(); ++itr)
-                {
-                    if ((*itr).second->GetSpellInfo()->CasterAuraState == flag )
-                        if (AuraApplication* aurApp = (*itr).second->GetApplicationOfTarget(GetGUID()))
-                            (*itr).second->HandleAllEffects(aurApp, AURA_EFFECT_HANDLE_REAL, false);
-                }
+                std::vector<Aura*> auras;
+                for (auto const& [id, aura] : GetOwnedAuras())
+                    if (aura->GetSpellInfo()->CasterAuraState == flag)
+                        auras.push_back(aura);
+                for (Aura* aura : auras)
+                    if (AuraApplication* aurApp = aura->GetApplicationOfTarget(GetGUID()))
+                        aura->HandleAllEffects(aurApp, AURA_EFFECT_HANDLE_REAL, false);
             }
         }
     }
