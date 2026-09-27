@@ -768,6 +768,7 @@ public:
 
     // Talent Additional Set
     [[nodiscard]] bool IsAdditionalTalentSpell(uint32 spellId) const;
+    void RegisterAdditionalTalentSpell(uint32 spellId);
 
     [[nodiscard]] bool HasSpellCooldownOverride(uint32 spellId) const;
     [[nodiscard]] SpellCooldownOverride GetSpellCooldownOverride(uint32 spellId) const;

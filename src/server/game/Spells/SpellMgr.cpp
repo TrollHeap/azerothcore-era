@@ -680,6 +680,11 @@ bool SpellMgr::IsAdditionalTalentSpell(uint32 spellId) const
     return mTalentSpellAdditionalSet.find(spellId) != mTalentSpellAdditionalSet.end();
 }
 
+void SpellMgr::RegisterAdditionalTalentSpell(uint32 spellId)
+{
+    mTalentSpellAdditionalSet.insert(GetFirstSpellInChain(spellId));
+}
+
 SpellLearnSkillNode const* SpellMgr::GetSpellLearnSkill(uint32 spell_id) const
 {
     SpellLearnSkillMap::const_iterator itr = mSpellLearnSkills.find(spell_id);
