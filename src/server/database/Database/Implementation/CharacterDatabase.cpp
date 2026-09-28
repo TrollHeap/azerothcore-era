@@ -649,14 +649,14 @@ void CharacterDatabaseConnection::DoPrepareStatements()
     // By providing the realm ID explicitly, this ensures that mysql reverse proxy will use
     // correct realm database for the transaction.
     PrepareStatement(CHAR_NO_OP_PROVIDE_REALM_CONTEXT, "SELECT ? AS no_op", CONNECTION_ASYNC);
-    PrepareStatement(CHAR_SEL_ERA_PVP_RANK_STATE, "SELECT `rank`,rank_points,managed_title FROM era_pvp_rank_state WHERE guid = ?", CONNECTION_SYNCH);
+    PrepareStatement(CHAR_SEL_ERA_PVP_RANK_STATE, "SELECT `rank`,rank_points,managed_title,highest_rank FROM era_pvp_rank_state WHERE guid = ?", CONNECTION_SYNCH);
     PrepareStatement(CHAR_INS_ERA_PVP_RANK_STATE, "INSERT IGNORE INTO era_pvp_rank_state (guid,is_bot,team,updated_week) VALUES (?,?,?,?)", CONNECTION_ASYNC);
     PrepareStatement(CHAR_INS_ERA_PVP_RANK_WEEK, "INSERT INTO era_pvp_rank_week (week_start,guid,is_bot,team,honor,honorable_kills) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE honor=honor+?, honorable_kills=honorable_kills+?", CONNECTION_BOTH);
     PrepareStatement(CHAR_SEL_ERA_PVP_RANK_STANDINGS, "SELECT w.guid,w.honor FROM era_pvp_rank_week w JOIN era_pvp_rank_state s ON s.guid = w.guid WHERE w.week_start = ? AND s.is_bot = ? AND s.team = ? AND s.updated_week <= w.week_start AND w.honorable_kills >= 15 ORDER BY w.honor DESC,w.guid", CONNECTION_SYNCH);
     PrepareStatement(CHAR_UPD_ERA_PVP_RANK_TEAMS, "UPDATE era_pvp_rank_state s JOIN characters c ON c.guid = s.guid LEFT JOIN era_pvp_rank_rollover r ON r.week_start = s.updated_week AND r.is_bot = s.is_bot AND r.team = s.team SET s.updated_week = CASE WHEN r.week_start IS NULL THEN s.updated_week ELSE s.updated_week + 604800 END, s.team = CASE WHEN (? & (1 << (c.race - 1))) <> 0 THEN 0 ELSE 1 END WHERE s.team <> CASE WHEN (? & (1 << (c.race - 1))) <> 0 THEN 0 ELSE 1 END", CONNECTION_SYNCH);
-    PrepareStatement(CHAR_SEL_ERA_PVP_RANK_COHORT, "SELECT guid,rank_points,updated_week,managed_title FROM era_pvp_rank_state WHERE is_bot = ? AND team = ?", CONNECTION_SYNCH);
+    PrepareStatement(CHAR_SEL_ERA_PVP_RANK_COHORT, "SELECT guid,rank_points,updated_week,managed_title,highest_rank FROM era_pvp_rank_state WHERE is_bot = ? AND team = ?", CONNECTION_SYNCH);
     PrepareStatement(CHAR_SEL_ERA_PVP_RANK_BOT_SIMULATION, "SELECT s.guid FROM era_pvp_rank_state s JOIN characters c ON c.guid = s.guid WHERE s.is_bot = 1 AND s.team = ? AND c.level = 60 AND NOT EXISTS (SELECT 1 FROM era_pvp_rank_week w WHERE w.week_start = ? AND w.guid = s.guid)", CONNECTION_SYNCH);
-    PrepareStatement(CHAR_UPD_ERA_PVP_RANK_STATE, "UPDATE era_pvp_rank_state SET rank_points = ?, `rank` = ?, updated_week = ? WHERE guid = ?", CONNECTION_ASYNC);
+    PrepareStatement(CHAR_UPD_ERA_PVP_RANK_STATE, "UPDATE era_pvp_rank_state SET rank_points = ?, `rank` = ?, highest_rank = GREATEST(highest_rank, `rank`), updated_week = ? WHERE guid = ?", CONNECTION_ASYNC);
     PrepareStatement(CHAR_UPD_ERA_PVP_RANK_TITLE, "UPDATE era_pvp_rank_state SET managed_title = ? WHERE guid = ?", CONNECTION_ASYNC);
     PrepareStatement(CHAR_SEL_ERA_PVP_RANK_ROLLOVER, "SELECT 1 FROM era_pvp_rank_rollover WHERE week_start = ? AND is_bot = ? AND team = ?", CONNECTION_SYNCH);
     PrepareStatement(CHAR_INS_ERA_PVP_RANK_ROLLOVER, "INSERT IGNORE INTO era_pvp_rank_rollover (week_start,is_bot,team,closed_at) VALUES (?,?,?,UTC_TIMESTAMP())", CONNECTION_ASYNC);
