@@ -212,24 +212,9 @@ uint32 GetSkillDiscoverySpell(uint32 skillId, uint32 spellId, Player* player)
     // check spell case
     SkillDiscoveryMap::const_iterator tab = SkillDiscoveryStore.find(int32(spellId));
 
-    if (tab != SkillDiscoveryStore.end())
-    {
-        for (SkillDiscoveryList::const_iterator item_iter = tab->second.begin(); item_iter != tab->second.end(); ++item_iter)
-        {
-            if (roll_chance_f(item_iter->chance * sWorld->getRate(RATE_SKILL_DISCOVERY)) &&
-                    item_iter->reqSkillValue <= skillvalue &&
-                    !player->HasSpell(item_iter->spellId))
-                return item_iter->spellId;
-        }
-
-        return 0;
-    }
-
-    if (!skillId)
-        return 0;
-
-    // check skill line case
-    tab = SkillDiscoveryStore.find(-(int32)skillId);
+    // Fall back to the skill line only when no spell-specific table exists.
+    if (tab == SkillDiscoveryStore.end() && skillId)
+        tab = SkillDiscoveryStore.find(-(int32)skillId);
     if (tab != SkillDiscoveryStore.end())
     {
         for (SkillDiscoveryList::const_iterator item_iter = tab->second.begin(); item_iter != tab->second.end(); ++item_iter)

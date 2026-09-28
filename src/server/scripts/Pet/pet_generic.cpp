@@ -412,12 +412,7 @@ struct npc_pet_gen_target_following_bomb : public NullCreatureAI
 
 struct npc_pet_gen_gnomish_flame_turret : public ScriptedAI
 {
-    npc_pet_gen_gnomish_flame_turret(Creature* c) : ScriptedAI(c)
-    {
-        checkTimer = 0;
-    }
-
-    uint32 checkTimer;
+    npc_pet_gen_gnomish_flame_turret(Creature* c) : ScriptedAI(c) { }
 
     void Reset() override
     {
@@ -588,13 +583,11 @@ struct npc_pet_gen_wind_rider_cub : public NullCreatureAI
     npc_pet_gen_wind_rider_cub(Creature* c) : NullCreatureAI(c)
     {
         isFlying = true;
-        checkTimer = 0;
         checkTimer2 = 2000;
         me->AddUnitState(UNIT_STATE_NO_ENVIRONMENT_UPD);
     }
 
     bool isFlying;
-    uint32 checkTimer;
     uint32 checkTimer2;
 
     void UpdateAI(uint32 diff) override
