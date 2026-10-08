@@ -2104,6 +2104,7 @@ public:
 
     void JoinedChannel(Channel* c);
     void LeftChannel(Channel* c);
+    bool IsInChannel(const Channel* c);
     void CleanupChannels();
     void ClearChannelWatch();
     void UpdateLFGChannel();

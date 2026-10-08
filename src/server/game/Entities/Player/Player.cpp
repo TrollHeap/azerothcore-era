@@ -5094,6 +5094,14 @@ void Player::LeftChannel(Channel* c)
     m_channels.remove(c);
 }
 
+bool Player::IsInChannel(const Channel* c)
+{
+    return std::any_of(m_channels.begin(), m_channels.end(), [c](const Channel* chan)
+    {
+        return c->GetChannelId() == chan->GetChannelId();
+    });
+}
+
 void Player::CleanupChannels()
 {
     while (!m_channels.empty())
